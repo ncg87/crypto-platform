@@ -8,10 +8,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
+import { useForm } from 'react-hook-form'
 
 interface LoginDialogProps {
   open: boolean
@@ -19,30 +19,34 @@ interface LoginDialogProps {
   onRegisterClick: () => void
 }
 
+interface FormData {
+  email: string
+  password: string
+}
+
 export function LoginDialog({ open, onOpenChange, onRegisterClick }: LoginDialogProps) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
   const { toast } = useToast()
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: FormData) => {
     setIsLoading(true)
-
     try {
-      await login(email, password)
+      await login(data.email, data.password)
       onOpenChange(false)
       toast({
         title: 'Success',
         description: 'You have been logged in.',
       })
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Invalid email or password.',
-        variant: 'destructive',
-      })
+      if (error instanceof Error) {
+        toast({
+          title: 'Error',
+          description: error.message || 'Invalid email or password.',
+          variant: 'destructive',
+        })
+      }
     } finally {
       setIsLoading(false)
     }
@@ -54,24 +58,26 @@ export function LoginDialog({ open, onOpenChange, onRegisterClick }: LoginDialog
         <DialogHeader>
           <DialogTitle>Login</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Input
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              {...register('email', { required: true })}
             />
+            {errors.email && (
+              <span className="text-sm text-red-500">Email is required</span>
+            )}
           </div>
           <div className="space-y-2">
             <Input
               type="password"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              {...register('password', { required: true })}
             />
+            {errors.password && (
+              <span className="text-sm text-red-500">Password is required</span>
+            )}
           </div>
           <Button
             type="submit"
@@ -86,7 +92,7 @@ export function LoginDialog({ open, onOpenChange, onRegisterClick }: LoginDialog
               onClick={onRegisterClick}
               type="button"
             >
-              Don't have an account? Sign up
+              Don&apos;t have an account? Sign up
             </Button>
           </div>
         </form>

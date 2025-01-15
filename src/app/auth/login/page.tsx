@@ -23,6 +23,7 @@ export default function LoginPage() {
       // Temporary: just redirect to dashboard
       router.push('/dashboard');
     } catch (_err) {
+      console.error(_err)
       setError('Failed to login. Please try again.');
     }
   };

@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCryptoData } from '@/hooks/use-crypto-data'
 import { formatCurrency, formatPercentage } from '@/lib/utils'
+import { CryptoAsset } from '@/types'
 
 export function MarketOverview() {
   const { data: assets, isLoading } = useCryptoData()
@@ -10,7 +11,7 @@ export function MarketOverview() {
   if (isLoading) return <div className="animate-pulse">Loading...</div>
 
   // Calculate total market cap
-  const totalMarketCap = assets?.reduce((sum, asset) => sum + (asset.market_cap || 0), 0)
+  const totalMarketCap = assets?.reduce((sum, asset: CryptoAsset) => sum + (asset.market_cap || 0), 0)
   const marketCapChange = assets?.[0]?.price_change_percentage_24h || 0
 
   return (

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
+import { useForm } from 'react-hook-form'
 
 interface RegisterDialogProps {
   open: boolean
@@ -18,17 +19,20 @@ interface RegisterDialogProps {
   onLoginClick: () => void
 }
 
+interface FormData {
+  email: string
+  password: string
+  confirmPassword: string
+}
+
 export function RegisterDialog({ open, onOpenChange, onLoginClick }: RegisterDialogProps) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { register } = useAuth()
+  const { register: signUp } = useAuth()
+  const { register, handleSubmit } = useForm<FormData>()
   const { toast } = useToast()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (password !== confirmPassword) {
+  const onSubmit = async (data: FormData) => {
+    if (data.password !== data.confirmPassword) {
       toast({
         title: 'Error',
         description: 'Passwords do not match.',
@@ -38,15 +42,15 @@ export function RegisterDialog({ open, onOpenChange, onLoginClick }: RegisterDia
     }
 
     setIsLoading(true)
-
     try {
-      await register(email, password)
+      await signUp(data.email, data.password)
       onOpenChange(false)
       toast({
         title: 'Success',
         description: 'Your account has been created.',
       })
     } catch (error) {
+      console.error(error)
       toast({
         title: 'Error',
         description: 'Failed to create account.',
@@ -63,32 +67,26 @@ export function RegisterDialog({ open, onOpenChange, onLoginClick }: RegisterDia
         <DialogHeader>
           <DialogTitle>Create an account</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Input
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              {...register('email', { required: true })}
             />
           </div>
           <div className="space-y-2">
             <Input
               type="password"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              {...register('password', { required: true })}
             />
           </div>
           <div className="space-y-2">
             <Input
               type="password"
               placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
+              {...register('confirmPassword', { required: true })}
             />
           </div>
           <Button
@@ -99,11 +97,7 @@ export function RegisterDialog({ open, onOpenChange, onLoginClick }: RegisterDia
             {isLoading ? 'Loading...' : 'Create Account'}
           </Button>
           <div className="text-center text-sm">
-            <Button
-              variant="link"
-              onClick={onLoginClick}
-              type="button"
-            >
+            <Button variant="link" onClick={onLoginClick} type="button">
               Already have an account? Login
             </Button>
           </div>

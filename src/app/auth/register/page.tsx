@@ -29,6 +29,7 @@ export default function RegisterPage() {
       // Temporary: just redirect to login
       router.push('/auth/login');
     } catch (_err) {
+      console.log(_err)
       setError('Failed to register. Please try again.');
     }
   };

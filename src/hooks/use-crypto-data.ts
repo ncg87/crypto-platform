@@ -1,23 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-
-// Mock data
-const mockCryptoData = [
-  { id: 'bitcoin', name: 'Bitcoin', symbol: 'BTC', price: 50000 },
-  { id: 'ethereum', name: 'Ethereum', symbol: 'ETH', price: 3000 },
-  { id: 'dogecoin', name: 'Dogecoin', symbol: 'DOGE', price: 0.15 },
-]
-
-// Mock API function
-const getMockAssets = async () => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500))
-  return mockCryptoData
-}
+import { cryptoApi } from '@/services/api'
+import { CryptoAsset } from '@/types'
 
 export function useCryptoData() {
-  return useQuery({
+  return useQuery<CryptoAsset[]>({
     queryKey: ['crypto-assets'],
-    queryFn: getMockAssets,
+    queryFn: cryptoApi.getAssets,
     refetchInterval: 30000,
   })
 }

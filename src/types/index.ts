@@ -8,6 +8,6 @@ export interface CryptoAsset {
 }
 
 export interface MarketData {
-  total_market_cap: number  // Changed from camelCase to snake_case
+  total_market_cap: number
   total_volume: number
-} 
+}
