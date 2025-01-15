@@ -28,10 +28,6 @@ const mockMarketData: MarketData = {
   // Add more mock market data as needed
 }
 
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-})
-
 export const cryptoApi = {
   getAssets: async (): Promise<CryptoAsset[]> => {
     // Return mock data instead of making an API call

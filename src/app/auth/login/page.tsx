@@ -22,7 +22,7 @@ export default function LoginPage() {
       
       // Temporary: just redirect to dashboard
       router.push('/dashboard');
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to login. Please try again.');
     }
   };
@@ -83,7 +83,7 @@ export default function LoginPage() {
           
           <div className="text-center">
             <Link href="/auth/register" className="text-indigo-600 hover:text-indigo-500">
-              Don't have an account? Register
+              Don&apos;t have an account? Register
             </Link>
           </div>
         </form>

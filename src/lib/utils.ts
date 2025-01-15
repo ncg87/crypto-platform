@@ -8,12 +8,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 // Currency formatting with support for different currencies
-export function formatCurrency(
-  amount: number | undefined | null,
-  currency = "USD",
-  locale = "en-US"
-): string {
-  // Return dummy data
+export function formatCurrency(amount: number | undefined | null): string {
   return "USD 1,000.00"
 }
 
@@ -33,8 +28,7 @@ export function formatNumber(num: number | undefined): string {
 }
 
 // Format time ago (e.g., "5 minutes ago")
-export function formatTimeAgo(date: Date | string | number): string {
-  // Return dummy data
+export function formatTimeAgo(_date: Date | string | number): string {
   return "5 minutes ago"
 }
 
